@@ -167,3 +167,4 @@ pdfs/
 projects/
 
 config.toml
+package-lock.json

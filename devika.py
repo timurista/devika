@@ -85,11 +85,14 @@ def download_project_pdf():
 
 
 @app.route("/api/get-messages", methods=["POST"])
-@route_logger(logger)
 def get_messages():
-    data = request.json
-    project_name = data.get("project_name")
-    messages = ProjectManager().get_messages(project_name)
+    try:
+        data = request.json
+        project_name = data.get("project_name")
+        messages = ProjectManager().get_messages(project_name)
+    except Exception as e:
+        logger.error(f"Error getting messages: {e}")
+        messages = []
     return jsonify({"messages": messages})
 
 
@@ -140,12 +143,15 @@ def is_agent_active():
 
 
 @app.route("/api/get-agent-state", methods=["POST"])
-@route_logger(logger)
 def get_agent_state():
-    data = request.json
-    project_name = data.get("project_name")
-    agent_state = AgentState().get_latest_state(project_name)
-    return jsonify({"state": agent_state})
+    try:
+        data = request.json
+        project_name = data.get("project_name")
+        agent_state = AgentState().get_latest_state(project_name)
+        return jsonify({"state": agent_state})
+    except Exception as e:
+        logger.error(f"Error getting agent state: {e}")
+        return jsonify({"state": None})
 
 
 @app.route("/api/calculate-tokens", methods=["POST"])
